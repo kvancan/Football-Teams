@@ -1,18 +1,15 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-
 require __DIR__ . '/vendor/autoload.php';
-
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 function access(){
-
     $token = $_ENV["token"];
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.football-data.org/v4/teams?limit=100&offset=null',
+        CURLOPT_URL => 'https://api.football-data.org/v4/competitions/',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -20,76 +17,74 @@ function access(){
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array('X-Auth-Token: '.$token.''
+        CURLOPT_HTTPHEADER => array(
+            'X-Auth-Token: '.$token.''
         ),
       ));
       
       $response = curl_exec($curl);
       curl_close($curl);
-      $value = json_decode($response, true);    
+      $value = json_decode($response, true);   
       return $value;
 }
-function show(){
-    $names = [];
-    $teams = access();
-    for($i = 0; $i < 100; $i++){
-        $team["name"] = $teams["teams"][$i]["name"];
-        array_push($names, $team);
+function showcompetitions(){
+    $ligler = [];
+    $competitions = access();
+    for($i = 0; $i < 10; $i++){
+        $competition["name"] = $competitions["competitions"][$i]["name"];
+        $competition["image"] = $competitions["competitions"][$i]["emblem"];
+        $competition["id"] = $competitions["competitions"][$i]["id"];
+        array_push($ligler,$competition);
     }
-    return $names;
+    return $ligler;
 }
-$team1 = show();
+$ligler = showcompetitions();
+$increment = 0;
 ?>
 
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CodePen - vue.js - order and filter list animation</title>
-  <link rel="stylesheet" href="./style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Teams Standings</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- partial:index.partial.html -->
-<div id="app" v-cloak>
-	<div class="search">
-		<div class="icon">
-			<div class="circle"></div>
-			<div class="bar"></div>
-		</div>
-		<div class="search-input">
-			<input type="text" placeholder="Search..." v-model="searchQuery">
-		</div>
-	</div>
-	<div class="table-container">
-		<table>
-			<thead>
-				<tr>
-					<th class="small center" @click="sort('position','asc')">#</th>
-					<th class="medium center"></th>
-					<th class="large" @click="sort('teamName','asc')">Club</th>
-				</tr>
-			</thead>
-			<tbody name="fade-list" is="transition-group">
-				<tr v-for="team in filteredBySearch" :key="team.position">
-					<td class="small center">1</td>
-					<td class="medium"><img :src="team.crestURI" alt=""></td>
-					<td class="large"><?= $team1[0]["name"] ?></td>
+    <header>
+        <h1>Football League Standings</h1>
+    </header>
+    
+    <section id="standings">
+        <table id="standingsTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">#</th>
+                    <th>Logo</th>
+                    <th onclick="sortTable(2)">Standing</th>
+                </tr>
+            </thead>
+            <tbody>
+              <div id ="lig" >
+                <?php foreach($ligler as $eleman){
+                    $increment = $increment + 1;
+                    
+                    ?>
+                <tr>
+                    <td><?= $increment ?></td>
+                    <td><img  src="<?= $eleman["image"] ?>" style = 'height:90px;' ></td>
+                    <td><a href="detail.php?league=<?= $eleman["id"] ?>"> <?= $eleman["name"] ?></a></td>
+                </tr>
+                <?php } ?>
+                <!-- Add more teams here with their logos -->
+              </div>
+            </tbody>
+        </table>
+    </section>
 
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="warning" v-if="filteredBySearch.length<=0">
-			<span>No results found.</span>
-		</div>
-	</div>
-</div>
-<!-- partial -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17-beta.0/vue.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js'></script>
-<script src='https://codepen.io/ClementRoche/pen/OrGaMg.js'></script><script  src="./script.js"></script>
-
+    <footer>
+        <p>&copy; 2024 Football League</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ function access(){
     $token = $_ENV["token"];
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.football-data.org/v4/teams?limit=100&offset=null',
+        CURLOPT_URL => 'https://api.football-data.org/v4/competitions/',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -29,16 +29,20 @@ function access(){
       $value = json_decode($response, true);    
       return $value;
 }
-function show(){
-    $names = [];
-    $teams = access();
+function showcompetitions(){
+    $ligler = [];
+    $competitions = access();
     for($i = 0; $i < 100; $i++){
-        $team["name"] = $teams["teams"][$i]["name"];
-        array_push($names, $team);
+        $competition["name"] = $competitions["competitions"][$i]["area"]["name"];
+        $competition["image"] = $competitions["competitions"][$i]["area"]["flag"];
+        $competition["id"] = $competitions["competitions"][$i]["id"];
+        array_push($ligler, $competition);
     }
-    return $names;
+    return $ligler;
 }
 
-$team1 = show();
-var_dump($team1);
+$lig = showcompetitions();
+
+var_dump ($lig["names"]);
+
 ?>
