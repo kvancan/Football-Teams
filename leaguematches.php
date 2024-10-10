@@ -10,7 +10,7 @@ function access(){
     $id = $_GET["id"];
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => 'https://api.football-data.org/v4/teams/'.$id.'/matches',
+      CURLOPT_URL => 'https://api.football-data.org/v4/competitions/'.$id.'/matches',
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
@@ -25,7 +25,7 @@ function access(){
     $response = curl_exec($curl);
     curl_close($curl);
     $value = json_decode($response, true);   
-    return $value;
+    return $value;   
 }
 function showmatches(){
     $maclar = [];

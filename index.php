@@ -62,6 +62,7 @@ $increment = 0;
                     <th onclick="sortTable(0)">#</th>
                     <th>Logo</th>
                     <th onclick="sortTable(2)">Standing</th>
+                    <th onclick="sortTable(2)"></th>
                 </tr>
             </thead>
             <tbody>
@@ -74,6 +75,7 @@ $increment = 0;
                     <td><?= $increment ?></td>
                     <td><img  src="<?= $eleman["image"] ?>" style = 'height:90px;' ></td>
                     <td><a href="teams.php?league=<?= $eleman["id"] ?>&name=<?= $eleman["name"] ?>"> <?= $eleman["name"] ?></a></td>
+                    <td><a href="leaguematches.php?id=<?= $eleman["id"] ?>&name=<?= $eleman["name"] ?>"> <?= 'Matches' ?></a></td>
                 </tr>
                 <?php } ?>
                 <!-- Add more teams here with their logos -->
